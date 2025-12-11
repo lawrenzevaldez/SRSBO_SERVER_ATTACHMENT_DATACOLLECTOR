@@ -1,12 +1,14 @@
 module.exports = {
-    apps : [{
-    name: "srs_bo",
-    script: "./server.js",
-    env: {
-    NODE_ENV: "development",
+  apps: [
+    {
+      name: "srs_bo_datacollector",
+      script: "./server.js",
+      env: {
+        NODE_ENV: "development",
+      },
+      env_production: {
+        NODE_ENV: "production",
+      },
     },
-    env_production: {
-    NODE_ENV: "production",
-    }
-}]
-}
+  ],
+};

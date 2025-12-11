@@ -13,3 +13,5 @@ files
 database/development.sqlite
 
 public/images
+
+package-lock.json
