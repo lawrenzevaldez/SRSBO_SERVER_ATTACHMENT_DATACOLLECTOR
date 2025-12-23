@@ -1221,7 +1221,6 @@ class RsMod extends Model {
   // DATACOLLECTOR
   async print_rs_dc(currentName, rsid, copy = 0, two_print = false) {
     try {
-      console.log(currentName);
       let row = await this.getHeaderRms(rsid);
       let rsHeaderItems = await this.getDetailsRms(rsid);
       let supplierName = await this.getSupplierName(row.supplier_code);

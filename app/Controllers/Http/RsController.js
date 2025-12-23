@@ -311,7 +311,7 @@ class RsController {
         "user_fullname",
       ]);
       let itemsHeader = [];
-      let movementId;
+      let movementId = [];
 
       let vendor_array = _.uniqBy(vendor_list);
       let invalid_barcode_counter = 0;
@@ -351,7 +351,7 @@ class RsController {
               throw new CustomException({ message: result.message }, 401);
             } else {
               let movement_id = await RsMod.rsNoList(rs_id);
-              movementId = movement_id;
+              movementId.push(movement_id);
 
               await RsMod.saveAuditTrail(user_id, movementId);
               await RsMod.print_rs(user_fullname, rs_id, 0, true);
@@ -381,8 +381,8 @@ class RsController {
         "user_fullname",
       ]);
       let itemsHeader = [];
-      let movementId;
-      let result2;
+      let movementId = [];
+      let result2 = [];
       let vendor_array = _.uniqBy(vendor_list);
       let invalid_barcode_counter = 0;
 
@@ -420,10 +420,12 @@ class RsController {
               throw new CustomException({ message: result.message }, 401);
             } else {
               let movement_id = await RsMod.rsNoList(rs_id);
-              movementId = movement_id;
+              movementId.push(movement_id);
 
-              await RsMod.saveAuditTrail(user_id, movementId);
-              result2 = await RsMod.print_rs_dc(user_fullname, rs_id, 0, true);
+              await RsMod.saveAuditTrail(user_id, movementId.join(", "));
+              result2.push(
+                await RsMod.print_rs_dc(user_fullname, rs_id, 0, true)
+              );
             }
           }
         }
