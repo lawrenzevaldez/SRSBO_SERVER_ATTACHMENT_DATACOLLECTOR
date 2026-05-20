@@ -52,7 +52,7 @@ class RsMod extends Model {
         "discountcode3",
         "vendorcode",
         "qty",
-        "averagenetcost"
+        "averagenetcost",
       )
       .from("vendor_products")
       .where("productid", productid)
@@ -62,7 +62,7 @@ class RsMod extends Model {
         {
           message: `Vendor code doest not exist in vendor products ${productid}`,
         },
-        401
+        401,
       );
     }
     return row[0];
@@ -99,7 +99,7 @@ class RsMod extends Model {
             barcode +
             ") Paki chat ang operations <br>Example:<br> (Supplier Name) <br> Return or Disposal <br> Pakiusap paki sunod po ng format",
         },
-        401
+        401,
       );
     }
     return row[0];
@@ -168,7 +168,7 @@ class RsMod extends Model {
     qtys,
     user_id,
     rs_id /*,
-    p_branch*/
+    p_branch*/,
   ) {
     let rs_row = await this.fetch_type_rs(vendorcode, p_barcode);
 
@@ -258,10 +258,10 @@ class RsMod extends Model {
       "b.qty",
       "b.uom",
       "b.price",
-      "b.id"
+      "b.id",
     )
       .joinRaw(
-        "FROM 0_rms_header a INNER JOIN 0_rms_items b ON a.rs_id = b.rs_id"
+        "FROM 0_rms_header a INNER JOIN 0_rms_items b ON a.rs_id = b.rs_id",
       )
       .where("a.movement_no", 0)
       .andWhere("a.pending", 0)
@@ -318,10 +318,10 @@ class RsMod extends Model {
 
   async mTotalQty(res_id) {
     let [row, field] = await Db.raw(
-      `SELECT SUM(qty * (IF(custom_multiplier=0,orig_multiplier,custom_multiplier))) as totalQty FROM 0_rms_items WHERE rs_id IN (${res_id}) `
+      `SELECT SUM(qty * (IF(custom_multiplier=0,orig_multiplier,custom_multiplier))) as totalQty FROM 0_rms_items WHERE rs_id IN (${res_id}) `,
     );
     let [row2, field2] = await Db.raw(
-      `SELECT SUM(ROUND(qty*price,4)) as netTotal FROM 0_rms_items  WHERE rs_id IN (${res_id})`
+      `SELECT SUM(ROUND(qty*price,4)) as netTotal FROM 0_rms_items  WHERE rs_id IN (${res_id})`,
     );
     return [row[0].totalQty, row2[0].netTotal];
   }
@@ -332,7 +332,7 @@ class RsMod extends Model {
     rs_id,
     movementCode,
     branchName,
-    currentUser
+    currentUser,
   ) {
     let vendorCode = "";
     let ToDescription = "";
@@ -478,7 +478,7 @@ class RsMod extends Model {
         row.qty,
         pack,
         row.barcode,
-        movementCode
+        movementCode,
       );
       if (!movementLine) return false;
 
@@ -538,7 +538,7 @@ class RsMod extends Model {
     qty,
     pack,
     barcode,
-    movementCode = ""
+    movementCode = "",
   ) {
     let extended = unitcost * qty;
     try {
@@ -712,7 +712,7 @@ class RsMod extends Model {
     comment,
     currentUser,
     rowrsId,
-    movementType
+    movementType,
   ) {
     let movementField = movementType != "FDFB" ? `${movement}` : "";
     let data = {
@@ -746,7 +746,7 @@ class RsMod extends Model {
     comment,
     currentUser,
     rowrsId,
-    movementType
+    movementType,
   ) {
     try {
       let datas = {
@@ -792,7 +792,7 @@ class RsMod extends Model {
         if (!rmsHeader)
           throw new CustomException(
             { message: `Something wrong in updating header rms.` },
-            401
+            401,
           );
       } else if (rsAction === 1) {
         let rowTotal = await this.mTotalQty(rowrsId);
@@ -804,13 +804,13 @@ class RsMod extends Model {
           rowrsId,
           codeMovement,
           branchName,
-          currentUser
+          currentUser,
         );
         // console.log("movement " + movement);
         if (!movement) {
           throw new CustomException(
             { message: `Something wrong in MS movement.` },
-            401
+            401,
           );
         }
 
@@ -820,7 +820,7 @@ class RsMod extends Model {
         if (!row) {
           throw new CustomException(
             { message: `Something wrong in MS movement.` },
-            401
+            401,
           );
         }
         // console.log("counters: " + row[0].counters);
@@ -832,7 +832,7 @@ class RsMod extends Model {
             comment,
             currentUser,
             rowrsId,
-            codeMovement
+            codeMovement,
           );
           // console.log("resRms: " + resRms);
           if (!resRms) {
@@ -840,7 +840,7 @@ class RsMod extends Model {
               {
                 message: `Something wrong in updating rms. Please refresh the app and try again.`,
               },
-              401
+              401,
             );
           }
         }
@@ -853,14 +853,14 @@ class RsMod extends Model {
           comment,
           currentUser,
           rowrsId,
-          codeMovement
+          codeMovement,
         );
         if (!resRms) {
           throw new CustomException(
             {
               message: `Something wrong in updating rms. Please refresh the app and try again.`,
             },
-            401
+            401,
           );
         }
       }
@@ -913,13 +913,13 @@ class RsMod extends Model {
   async rsNoList(rs_id) {
     let [row, field] = await Db.raw(
       `SELECT rs_id, movement_no FROM 0_rms_header WHERE rs_id IN(?) AND pending = 1`,
-      [rs_id]
+      [rs_id],
     );
     return row.length == 0
       ? rs_id
       : row[0].movement_no == 0
-      ? rs_id
-      : row[0].movement_no;
+        ? rs_id
+        : row[0].movement_no;
   }
 
   async Todays(num) {
@@ -966,7 +966,7 @@ class RsMod extends Model {
         rsHeaderItems = await this.getMovementItems(
           movementType,
           rsId,
-          movementType_
+          movementType_,
         );
         date_ = new Date(row.bo_processed_date);
       } else {
@@ -987,13 +987,13 @@ class RsMod extends Model {
         let wsbat = fileSystem.createWriteStream(print + "\\print\\test.bat");
         wsbat.write('RUNDLL32 PRINTUI.DLL,PrintUIEntry /y /n "%EPSONTM%" \n');
         wsbat.write(
-          "start /min notepad /P " + print + "\\print\\print_test.txt"
+          "start /min notepad /P " + print + "\\print\\print_test.txt",
         );
         wsbat.end();
       }
 
       let wstream = fileSystem.createWriteStream(
-        print + "\\print\\print_test.txt"
+        print + "\\print\\print_test.txt",
       );
       let product = `Product                                 QTY\n`;
       let totalQty;
@@ -1049,7 +1049,7 @@ class RsMod extends Model {
       wstream.write(
         "           TOTAL AMOUNT: " +
           accounting.formatMoney(totalCost.slice(-1)[0], "") +
-          "\n"
+          "\n",
       );
       wstream.write(line + "\n");
       wstream.write("Prepared by:" + currentName.toUpperCase() + `\n`);
@@ -1111,7 +1111,7 @@ class RsMod extends Model {
                                 GROUP BY prod_id,barcode,item_name,uom,orig_uom,orig_multiplier,
                                 custom_multiplier,price,supplier_code
                                 ORDER BY item_name`,
-        [mtype, mno]
+        [mtype, mno],
       );
       rows = row;
     } else {
@@ -1129,7 +1129,7 @@ class RsMod extends Model {
                                 GROUP BY prod_id,barcode,item_name,uom,orig_uom,orig_multiplier,
                                 custom_multiplier,price,supplier_code
                                 ORDER BY item_name`,
-        ["", mno]
+        ["", mno],
       );
       rows = row;
     }
@@ -1259,7 +1259,7 @@ class RsMod extends Model {
         rsHeaderItems = await this.getMovementItems(
           movementType,
           rsId,
-          movementType_
+          movementType_,
         );
         date_ = new Date(row.bo_processed_date);
       } else {
@@ -1280,13 +1280,13 @@ class RsMod extends Model {
         let wsbat = fileSystem.createWriteStream(print + "\\print\\test.bat");
         wsbat.write('RUNDLL32 PRINTUI.DLL,PrintUIEntry /y /n "%EPSONTM%" \n');
         wsbat.write(
-          "start /min notepad /P " + print + "\\print\\print_test.txt"
+          "start /min notepad /P " + print + "\\print\\print_test.txt",
         );
         wsbat.end();
       }
 
       let wstream = fileSystem.createWriteStream(
-        print + "\\print\\print_test.txt"
+        print + "\\print\\print_test.txt",
       );
       let product = `Product                              QTY\n`;
       let totalQty;
@@ -1358,7 +1358,7 @@ class RsMod extends Model {
       wstream.write(
         "           TOTAL AMOUNT: " +
           accounting.formatMoney(totalCost.slice(-1)[0], "") +
-          "\n"
+          "\n",
       );
       wstream.write(line + "\n");
       wstream.write("Prepared by:" + currentName.toUpperCase() + `\n`);
@@ -1383,7 +1383,7 @@ class RsMod extends Model {
       // bat.on('exit', (code) => {
       // 	// console.log(`Child exited with code ${code}`)
       // })
-
+      console.log(obj);
       return obj;
     } catch (Exception) {
       console.log(Exception);
@@ -1435,7 +1435,7 @@ class RsMod extends Model {
   // MAX AMOUNT 2000
   async fetch_rs_total_amount(rs_id, vendor_code) {
     let [row] = await Db.raw(
-      `SELECT SUM(price*qty) as price FROM 0_rms_items WHERE supplier_code = '${vendor_code}' AND pending = 0 AND rs_id = ${rs_id}`
+      `SELECT SUM(price*qty) as price FROM 0_rms_items WHERE supplier_code = '${vendor_code}' AND pending = 0 AND rs_id = ${rs_id}`,
     );
     return row.length == 0 ? 0 : parseFloat(row[0].price);
   }
